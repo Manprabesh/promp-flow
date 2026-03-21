@@ -39,21 +39,25 @@ type props = {
     addPrompt: (nodeID: string, value: string) => void;
     prompts: string;
     addNode: () => void;
-    nodeID: string
+    nodeID: string;
+    addResponse: (nodeID: string, value: string) => void;
 };
 
-const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID }: props) => {
+const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse }: props) => {
     const inputRef = useRef(null);
     const [focus, setFocus] = useState(false);
 
     let value;
-    const submit = useCallback(async() => {
+    const submit = useCallback(async () => {
         value = inputRef.current?.value?.trim();
         if (!value) return;
         const res = await message(value);
-        console.log("response ->",res)
-        // console.log("submitted:", value);
+        if (res.success) {
+            console.log("response ->", res)
+            addResponse(nodeID, res.data)
+        }
         addPrompt(nodeID, value);
+        console.log("submitted:", value);
     }, [addPrompt]);
 
     const handleKeyDown = useCallback(
@@ -107,7 +111,7 @@ type Props = {
     prompts: string;
 };
 
-const TextDisplayNode = ({ prompts }: { prompts: string }) => {
+const TextDisplayNode = ({ response }: { response: string }) => {
     const saveResponse = useCallback(() => {
         console.log("saves!")
     }, []);
@@ -118,7 +122,7 @@ const TextDisplayNode = ({ prompts }: { prompts: string }) => {
                 <p id="response-para">
 
                     {
-                        prompts
+                        response
                     }
                 </p>
                 <Handle type="target" position={Position.Left} />
@@ -158,10 +162,11 @@ const initialEdges = [
 
 
 const Card = () => {
-    console.log("hello")
+
     const [nodes, setNodes] = useNodesState(initialNodes);
     const [edges, setEdges] = useEdgesState(initialEdges);
     const [prompt, setPrompt] = useState<Record<string, string>>({});
+    const [response, setResponse] = useState<Record<string, string>>({});
 
 
     const addNode = useCallback(() => {
@@ -171,7 +176,7 @@ const Card = () => {
             const newId = `node-${prev.length + 1}`
 
             setEdges(eds => [...eds, {
-                id: `e${prev.length + 1}`,
+                id: `e${eds.length + 1}`,
                 source: newId,
                 target: newId + 1,
                 markerEnd: {
@@ -212,6 +217,13 @@ const Card = () => {
         }))
     }, [])
 
+    const addResponse = useCallback((nodeId: string, value: string) => {
+        setResponse(prev => ({
+            ...prev,
+            [nodeId]: value,
+        }))
+    }, [])
+
 
     const nodeTypes = useMemo(() => ({
         textUpdaters: (props: any) => {
@@ -221,6 +233,7 @@ const Card = () => {
 
                     <TextUpdaterNode {...props}
                         addPrompt={addPrompt}
+                        addResponse={addResponse}
                         prompts={prompt[props.id]}
                         addNode={addNode}
                         nodeID={props.id}
@@ -232,16 +245,13 @@ const Card = () => {
         textDisplay: (props: any) => {
             const sourceEdge = edges.find(e => e.target === props.id);
             const sourceNodeId = sourceEdge?.source;
-            console.log("sourceEdege", sourceEdge)
-            // console.log("---------", prompt[sourceNodeId ?? ""])
-            return <TextDisplayNode prompts={prompt[sourceNodeId ?? ""] ?? ""}
+            return <TextDisplayNode response={response[sourceNodeId ?? ""] ?? ""}
             />
         }
     }), [prompt, addNode, addPrompt, edges]);
 
     const onNodesChange = useCallback(
         (changes: any) => {
-            console.log("changes", changes);
             setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot))
         },
         [],
