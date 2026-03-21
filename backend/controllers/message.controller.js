@@ -1,4 +1,5 @@
 import Message from "../models/message.model.js";
+import openRouter from "../config/openRouter.js";
 
 export const createMessage = async (req, res) => {
   try {
@@ -12,24 +13,22 @@ export const createMessage = async (req, res) => {
     }
 
     //generate response
-    const response = `Processed: ${prompt}`;
+    console.log("The propmt", prompt)
+    const AIresponse = await openRouter(prompt)
+    console.log("The response ---->", AIresponse)
 
-    /* -------- SAVE TO DB -------- */
-    // const message = await Message.create({
-    //   prompt,
-    //   response,
-    // });
-
-    /* -------- RESPONSE -------- */
     res.status(201).json({
-      message: "Saved successfully",
+      success:true,
+      message: "Response successfully",
       data: prompt,
+      response:AIresponse
     });
 
   } catch (error) {
     console.error("Create message error:", error);
 
     res.status(500).json({
+      success:false,
       message: "Server error",
     });
   }
