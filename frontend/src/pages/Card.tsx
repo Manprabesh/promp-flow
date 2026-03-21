@@ -17,7 +17,7 @@ import {
 
 import '@xyflow/react/dist/style.css';
 import "../stylesheet/index.css"
-
+import { message } from '../services/api';
 const initialNodes = [
     {
         id: 'node-1',
@@ -47,11 +47,12 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID }: props) => {
     const [focus, setFocus] = useState(false);
 
     let value;
-    const submit = useCallback(() => {
+    const submit = useCallback(async() => {
         value = inputRef.current?.value?.trim();
         if (!value) return;
-
-        console.log("submitted:", value);
+        const res = await message(value);
+        console.log("response ->",res)
+        // console.log("submitted:", value);
         addPrompt(nodeID, value);
     }, [addPrompt]);
 
@@ -63,7 +64,7 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID }: props) => {
             }
             else {
                 // submit();
-                console.log("prmopt", prompts)
+                // console.log("prmopt", prompts)
             }
         },
         [submit]
@@ -214,7 +215,7 @@ const Card = () => {
 
     const nodeTypes = useMemo(() => ({
         textUpdaters: (props: any) => {
-            console.log("propsss---> ", props)
+            // console.log("propsss---> ", props)
             return (
                 <>
 
@@ -232,14 +233,14 @@ const Card = () => {
             const sourceEdge = edges.find(e => e.target === props.id);
             const sourceNodeId = sourceEdge?.source;
             console.log("sourceEdege", sourceEdge)
-            console.log("---------", prompt[sourceNodeId ?? ""])
+            // console.log("---------", prompt[sourceNodeId ?? ""])
             return <TextDisplayNode prompts={prompt[sourceNodeId ?? ""] ?? ""}
             />
         }
     }), [prompt, addNode, addPrompt, edges]);
 
     const onNodesChange = useCallback(
-        (changes:any) => {
+        (changes: any) => {
             console.log("changes", changes);
             setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot))
         },
