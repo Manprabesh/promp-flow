@@ -1,0 +1,139 @@
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: 'DM Sans', sans-serif;
+  /* height: 100vh; */
+}
+
+.container h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 28px;
+  color: #111827;
+  letter-spacing: -0.01em;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+
+/* ── Card Grid ── */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* ── Card Item ── */
+.card-item {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, transform 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.card-item:hover {
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+}
+
+.card-item h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.card-item .card-text {
+  font-size: 13px;
+  font-weight: 300;
+  color: #6b7280;
+  line-height: 1.65;
+  display: -webkit-box;
+  /* -webkit-line-clamp: 3; */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Empty State ── */
+.no-item {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+}
+
+.no-item > div {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 320px;
+  width: 100%;
+  animation: fadeUp 0.5s ease both;
+}
+
+.icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #f9fafb;
+  border: 0.5px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+}
+
+.icon-wrap svg {
+  width: 20px;
+  height: 20px;
+}
+
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 17px;
+  color: #111827;
+}
+
+
+/* ── More Button ── */
+.refresh-btn {
+  align-self: center;
+  background: #ffffff;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.refresh-btn:hover { background: #345679; }
+.refresh-btn:active { transform: scale(0.97); }
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
