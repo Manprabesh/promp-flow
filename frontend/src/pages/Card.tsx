@@ -1,14 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import React, { useCallback, useRef, useState, useMemo } from 'react';
 import {
-    Background,
     ReactFlow,
     useNodesState,
     useEdgesState,
-    addEdge,
-    useReactFlow,
-    ReactFlowProvider,
-    type Node,
-    type Edge,
     Position,
     Handle,
     applyNodeChanges,
@@ -45,11 +39,9 @@ type props = {
     addLoader:(value:boolean)=>void;
 };
 
-const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse, addLoader }: props) => {
-    const inputRef = useRef(null);
-    const [focus, setFocus] = useState(false);
-    const [disable, setDisable] = useState(true)
-    // const [text,setText] = useState
+const TextUpdaterNode = ({ addPrompt, prompts, nodeID, addResponse, addLoader }: props) => {
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+
 
     let value;
     const submit = useCallback(async () => {
@@ -85,11 +77,6 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse, add
         <div
             className="text-updater-node"
             tabIndex={0}
-            onFocus={() => setFocus(true)}
-            onBlur={(e) => {
-                if (e.currentTarget.contains(e.relatedTarget)) return;
-                setFocus(false);
-            }}
         >
 
 
@@ -111,9 +98,6 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse, add
     );
 };
 
-type Props = {
-    prompts: string;
-};
 
 const TextDisplayNode = ({ response, prompt, addLoader }: { response: string, prompt: string, addLoader:(value:boolean)=>void }) => {
     const saveResponse = useCallback(async () => {

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/v1";
+const API_URL = "https://promp-flow.onrender.com//api/v1";
 
 export const signup = async (email: string, password: string) => {
   const res = await fetch(`${API_URL}/signup`, {

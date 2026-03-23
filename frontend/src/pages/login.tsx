@@ -8,7 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   let navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const res = await login (email, password);
     console.log(res);

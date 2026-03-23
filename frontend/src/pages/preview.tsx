@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import "../stylesheet/storePreview.css"
 import { getMessage } from "../services/api";
-type Message = [{
+type Message = {
     prompt: string;
     response: string;
-}];
+};
 const StorePreview = () => {
     const [data, setData] = useState<Message[]>([]);
     const [page, setPage] = useState<number>(1);
-    const [limit, setlimit] = useState<number>(6);
 
     const fetchData = async () => {
         try {
-
 
             const result = await getMessage(page);
             if (result.success) {
@@ -34,7 +32,7 @@ const StorePreview = () => {
 
     useEffect(() => {
         fetchData();
-    }, [page, limit]);
+    }, [page]);
 
     return (
         <div className="container">
@@ -52,12 +50,10 @@ const StorePreview = () => {
                     <div className="no-item">
                         <div key="no card" className="no-item">
                             <h3 className="card-title">No Message</h3>
-                            {/* <div className="card-divider" /> */}
                             <p className="card-text">Nothing here yet. Messages will appear once they arrive.</p>
                         </div>
                     </div>
                 )}
-                {/* <Loader message="no message"/> */}
             </div>
 
             {

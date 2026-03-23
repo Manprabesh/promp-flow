@@ -74,7 +74,7 @@ const Signup = () => {
     else {
       const res = await signup(email, password);
       console.log(res);
-      if (res.sucess) {
+      if (res.success) {
 
         navigate("/app/card");
       }
