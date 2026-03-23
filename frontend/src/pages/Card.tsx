@@ -17,7 +17,8 @@ import {
 
 import '@xyflow/react/dist/style.css';
 import "../stylesheet/index.css"
-import { message } from '../services/api';
+import Loader from "../components/Loader"
+import { message, saveMessage } from '../services/api';
 const initialNodes = [
     {
         id: 'node-1',
@@ -41,23 +42,30 @@ type props = {
     addNode: () => void;
     nodeID: string;
     addResponse: (nodeID: string, value: string) => void;
+    addLoader:(value:boolean)=>void;
 };
 
-const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse }: props) => {
+const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse, addLoader }: props) => {
     const inputRef = useRef(null);
     const [focus, setFocus] = useState(false);
+    const [disable, setDisable] = useState(true)
+    // const [text,setText] = useState
 
     let value;
     const submit = useCallback(async () => {
+
         value = inputRef.current?.value?.trim();
         if (!value) return;
+        addLoader(true);
         const res = await message(value);
         if (res.success) {
             console.log("response ->", res)
             addResponse(nodeID, res.data)
+            addLoader(false);
         }
-        addPrompt(nodeID, value);
         console.log("submitted:", value);
+        addPrompt(nodeID, value);
+
     }, [addPrompt]);
 
     const handleKeyDown = useCallback(
@@ -66,14 +74,12 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse }: p
                 e.preventDefault();
                 submit();
             }
-            else {
-                // submit();
-                // console.log("prmopt", prompts)
-            }
+           
         },
         [submit]
     );
 
+ 
 
     return (
         <div
@@ -85,9 +91,7 @@ const TextUpdaterNode = ({ addPrompt, prompts, addNode, nodeID, addResponse }: p
                 setFocus(false);
             }}
         >
-            {/* {
-                focus && 
-            } */}
+
 
             <div>
                 <label htmlFor="text">Text:</label>
@@ -111,25 +115,37 @@ type Props = {
     prompts: string;
 };
 
-const TextDisplayNode = ({ response }: { response: string }) => {
-    const saveResponse = useCallback(() => {
+const TextDisplayNode = ({ response, prompt, addLoader }: { response: string, prompt: string, addLoader:(value:boolean)=>void }) => {
+    const saveResponse = useCallback(async () => {
+        addLoader(true)
         console.log("saves!")
+        const res = await saveMessage(prompt, response);
+        console.log("the save response ->", res)
+        if(res.success){
+            addLoader(false)
+        }
     }, []);
     return (
         <div>
+            {
+                response ? (
+                    <>
 
-            <div className='text-display-node'>
-                <p id="response-para">
+                        <div className='text-display-node'>
+                            <p id="response-para">
+                                {
+                                    response
+                                }
+                            </p>
+                            <Handle type="target" position={Position.Left} />
+                            <Handle type="source" position={Position.Right} id="a" />
+                            <Handle type="source" position={Position.Top} id="b" />
+                        </div>
+                        <button onClick={saveResponse}>Save</button>
+                    </>
+                ) : ""
+            }
 
-                    {
-                        response
-                    }
-                </p>
-                <Handle type="target" position={Position.Left} />
-                <Handle type="source" position={Position.Right} id="a" />
-                <Handle type="source" position={Position.Top} id="b" />
-            </div>
-            <button onClick={saveResponse}>Save</button>
         </div>
     )
 }
@@ -167,6 +183,7 @@ const Card = () => {
     const [edges, setEdges] = useEdgesState(initialEdges);
     const [prompt, setPrompt] = useState<Record<string, string>>({});
     const [response, setResponse] = useState<Record<string, string>>({});
+    const [loader, setLoader] = useState(false);
 
 
     const addNode = useCallback(() => {
@@ -196,13 +213,13 @@ const Card = () => {
             return [...prev, {
                 id: newId,
                 type: 'textUpdaters',
-                position: { x: prev[prev.length - 1]['position']['x'] + 200, y: prev[prev.length - 1]['position']['y'] + 0 },
+                position: { x: prev[prev.length - 1]['position']['x'] + 0, y: prev[prev.length - 1]['position']['y'] + 0 },
                 data: { value: 0 },
             },
             {
                 id: newId + 1,
                 type: 'textDisplay',
-                position: { x: prev[prev.length - 1]['position']['x'] + 500, y: prev[prev.length - 1]['position']['y'] + 50 },
+                position: { x: prev[prev.length - 1]['position']['x'] + 100, y: prev[prev.length - 1]['position']['y'] + 50 },
                 data: { value: 0 },
             }]
         })
@@ -237,6 +254,7 @@ const Card = () => {
                         prompts={prompt[props.id]}
                         addNode={addNode}
                         nodeID={props.id}
+                        addLoader = {setLoader}
 
                     />
                 </>
@@ -245,7 +263,10 @@ const Card = () => {
         textDisplay: (props: any) => {
             const sourceEdge = edges.find(e => e.target === props.id);
             const sourceNodeId = sourceEdge?.source;
-            return <TextDisplayNode response={response[sourceNodeId ?? ""] ?? ""}
+            return <TextDisplayNode
+                response={response[sourceNodeId ?? ""] ?? ""}
+                prompt={prompt[sourceNodeId ?? ""] ?? ""}
+                addLoader = {setLoader}
             />
         }
     }), [prompt, addNode, addPrompt, edges]);
@@ -266,6 +287,10 @@ const Card = () => {
             </button>
 
             <div style={{ width: '100vw', height: '100vh' }}>
+             
+                {
+                    loader && <Loader />
+                }
                 <ReactFlow
                     onNodesChange={onNodesChange}
                     nodes={nodes}
