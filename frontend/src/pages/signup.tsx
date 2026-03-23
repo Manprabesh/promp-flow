@@ -1,24 +1,93 @@
+// import { useState } from "react";
+// import { signup } from "../services/api";
+// import "../stylesheet/auth.css";
+// import { Link,useNavigate } from "react-router-dom";
+
+// const Signup = () => {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   let navigate = useNavigate();
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     const res = await signup(email, password);
+//     console.log(res);
+//     navigate("/app/card");
+//   };
+
+//   return (
+//     <div className="auth-container">
+//       <div className="auth-card">
+//         <h2 className="auth-title">Signup</h2>
+
+//         <form className="auth-form" onSubmit={handleSubmit}>
+//           <input
+//             className="auth-input"
+//             type="email"
+//             placeholder="Email"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//           />
+
+//           <input
+//             className="auth-input"
+//             type="password"
+//             placeholder="Password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+
+//           <button className="auth-button" type="submit">
+//             Signup
+//           </button>
+//         </form>
+
+//         <p className="auth-link">
+//           Already have an account? <Link to="/login">Login</Link>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Signup;
+
+
+
 import { useState } from "react";
 import { signup } from "../services/api";
 import "../stylesheet/auth.css";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   let navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
-    const res = await signup(email, password);
-    console.log(res);
-    navigate("/card");
+    if (password !== confirmPassword) {
+      alert("password mismatch")
+    }
+    else {
+      const res = await signup(email, password);
+      console.log(res);
+      if (res.sucess) {
+
+        navigate("/app/card");
+      }
+      else {
+        alert("something wen wrong");
+      }
+    }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2 className="auth-title">Signup</h2>
+        <h2 className="auth-title">Signin</h2>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <input
@@ -37,13 +106,21 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          <input
+            className="auth-input"
+            type="password"
+            placeholder="confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
           <button className="auth-button" type="submit">
             Signup
           </button>
         </form>
 
         <p className="auth-link">
-          Already have an account? <Link to="/login">Login</Link>
+          Don't have account? <Link to="/signup">Login</Link>
         </p>
       </div>
     </div>
