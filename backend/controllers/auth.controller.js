@@ -15,6 +15,7 @@ export const signUp = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
+                sucess:false,
                 message: "User already exists",
             });
         }
@@ -31,6 +32,7 @@ export const signUp = async (req, res) => {
         res.cookie("token", cookie);
 
         res.status(201).json({
+            success:true,
             message: "User created successfully",
             userId: user._id,
         });
