@@ -1,18 +1,19 @@
 import jwt from "jsonwebtoken";
 
 export default function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
+  const cookie = req.cookies.token;
+  // console.log()
 
-  console.log("headers debuggiing", authHeader);
+  console.log("headers debuggiing", req.cookies.token);
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!cookie) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const token = authHeader.split(" ")[1];
+  // const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(cookie, process.env.JWT_SECRET);
     console.log('decode',decoded)
     req.userId = decoded.id;
     next();
