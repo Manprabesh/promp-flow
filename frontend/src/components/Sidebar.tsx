@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../stylesheet/sidebar.css";
-import { User, House, ScrollText } from "lucide-react"
+import {  House, ScrollText } from "lucide-react"
 
 const navLinks = [
   {
