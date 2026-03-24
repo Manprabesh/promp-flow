@@ -44,7 +44,7 @@ export const saveMessage = async (prompt: string, response: string) => {
 }
 
 export const getMessage = async (page:number) => {
-  const res = await fetch(`http://localhost:5000/api/v1/get-message?page=${page}`, {
+  const res = await fetch(`$${API_URL}/get-message?page=${page}`, {
     credentials: "include",
   });
 
