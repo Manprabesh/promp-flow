@@ -12,19 +12,29 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+let frontendURI = "";
+if (process.env.NODE_ENV == "production") {
+  frontendURI = process.env.FRONTEND_URI
+} else {
+  frontendURI = "http://localhost:5173"
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URI, 
-  credentials: true,               
+  origin: frontendURI,
+  credentials: true,
 }));
 app.use(cookieParser())
 
 //routers
 import authRouter from './routes/auth.router.js';
 import messageRouter from './routes/message.router.js';
-app.use("/api/v1",authRouter);
-app.use("/api/v1",messageRouter);
+app.use("/api/v1", authRouter);
+app.use("/api/v1", messageRouter);
 
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port${PORT}`);
+
+  console.log("uri --->", frontendURI)
 });
