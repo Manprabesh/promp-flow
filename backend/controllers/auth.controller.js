@@ -11,11 +11,12 @@ export const signUp = async (req, res) => {
                 message: "Email and password are required",
             });
         }
+        console.log("email -->", email, "password -->", password);
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
-                sucess:false,
+                sucess: false,
                 message: "User already exists",
             });
         }
@@ -29,10 +30,15 @@ export const signUp = async (req, res) => {
         console.log("user id -->", user.email)
         const cookie = generateToken({ id: user._id })
 
-        res.cookie("token", cookie);
+        res.cookie('token', cookie, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+        });
 
         res.status(201).json({
-            success:true,
+            success: true,
             message: "User created successfully",
             userId: user._id,
         });
@@ -59,24 +65,30 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 message: "User not found",
-                sucess:false
+                sucess: false
             });
         }
 
-        const verified = await bcrypt.compare(password,user.password);
+        const verified = await bcrypt.compare(password, user.password);
 
-        if(!verified){
-            return res.status(404).json({success:false,message:"email or password is wrong"})
+        if (!verified) {
+            return res.status(404).json({ success: false, message: "email or password is wrong" })
         }
-        else{
+        else {
 
-            console.log("user id -->", user.email)
+            console.log("user id -->", user)
             const cookie = generateToken({ id: user._id })
-    
-            res.cookie("token", cookie);
-    
+
+
+            res.cookie('token', cookie, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+                maxAge: 1000 * 60 * 60 * 24 * 7,
+            });
+
             res.status(200).json({
-                sucess:true,
+                sucess: true,
                 message: "User loggedin successfully",
                 userId: user._id,
             });
@@ -86,7 +98,7 @@ export const login = async (req, res) => {
     } catch (error) {
         console.error("Signup error:", error);
         res.status(500).json({
-            success:false,
+            success: false,
             message: "Server error",
         });
     }
