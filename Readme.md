@@ -1,8 +1,9 @@
 # Prompt flow
 ```
-prompt flow is a system designed to manage, structure and execute sequence of prompts with AI models, where each prompt box(node) is connected to a output box(node) connected via a line(edge).
-
+prompt flow is a system designed to manage, structure and execute sequence of prompts with AI models,
+where each prompt box(node) is connected to a output box(node) connected via a line(edge).
 Enabling to save the AI model responses with its prompt, for future references.
+
 ```
 
 ## Features
