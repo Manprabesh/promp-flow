@@ -32,6 +32,9 @@ import messageRouter from './routes/message.router.js';
 app.use("/api/v1", authRouter);
 app.use("/api/v1", messageRouter);
 
+import groupRouter from './routes/group.router.js';
+app.use("/api/v1", groupRouter);
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port${PORT}`);
