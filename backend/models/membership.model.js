@@ -25,4 +25,4 @@ const membershipSchema = new Schema({
 
 membershipSchema.index({ user: 1, group: 1 }, { unique: true });
 membershipSchema.index({ group: 1 });
-    export default model("Membership", membershipSchema);
+export default model("Membership", membershipSchema);
