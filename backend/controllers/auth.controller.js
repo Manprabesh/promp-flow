@@ -1,7 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-
+import { OAuth2Client } from "google-auth-library";
 import generateToken from "../utils/jwt.js";
+import jwt from "jsonwebtoken"
+
 
 export const signUp = async (req, res) => {
     try {
@@ -103,3 +105,72 @@ export const login = async (req, res) => {
         });
     }
 }
+
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+export const OAuthLogin = async (req, res) => {
+    try {
+        const { credential } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({
+                success: false,
+                message: "Credential is required",
+            });
+        }
+
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Google token",
+            });
+        }
+
+        const { email, email_verified } = payload;
+
+        if (!email || !email_verified) {
+            return res.status(400).json({
+                success: false,
+                message: "Google email not verified",
+            });
+        }
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({
+                email,
+            });
+        }
+
+        const token = generateToken({ id: user._id });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Google login successful",
+            userId: user._id,
+        });
+
+    } catch (error) {
+        console.error("Error in OAuth login:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
+    }
+};
