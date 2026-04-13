@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
 import generateToken from "../utils/jwt.js";
-import jwt from "jsonwebtoken"
+
 
 
 export const signUp = async (req, res) => {
@@ -174,3 +174,13 @@ export const OAuthLogin = async (req, res) => {
         });
     }
 };
+
+export const checkAuth = async(req,res)=>{
+    try {
+        const { userId } = req;
+    
+        return res.status(200).json({message:"ok",data:userId,success:true})
+    } catch (error) {
+        console.log("error",error)
+    }
+}
