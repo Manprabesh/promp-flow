@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
 
-const   linkValidator = async (req, res, next) => {
+const   linkValidator = async (roomId) => {
     try {
-        const token = req.params.link;
+        const token = roomId
         console.log("inivite link",token);
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.adminID = decoded._id;
-        req.gName = decoded.gn;
-        console.log("decoded data -> ", decoded)
-        next();
+
+        console.log("decoded",decoded)
+        return decoded._id
 
     } catch (error) {
         console.error("error",error);
+        return false
     }
 }
 
