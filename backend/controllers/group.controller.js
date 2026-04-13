@@ -12,7 +12,7 @@ import Group from "../models/group.model.js";
 import Membership from "../models/membership.model.js";
 import User from "../models/user.model.js"
 import generateToken from "../utils/jwt.js";
-
+import linkValidator from "../middleware/linkValidator.js";
 
 //create group
 export const createGroup = async (req, res) => {
@@ -86,14 +86,14 @@ export const generateInvitationLink = async (req, res) => {
         //validate group name
 
 
-
-        const inivitaionToken = generateToken({ _id: userId, gn: groupName });
-        const inviteURL = new URL(`/api/v1/join-group/${inivitaionToken}`, "http://localhost:5000");
+        //use groupName to create invitation link in future
+        const inivitaionToken = generateToken({ _id: userId });
+        const inviteURL = new URL(`/app/card?l=${inivitaionToken}`, "http://localhost:5173");
 
         return res.status(201).json({
             message: "Invitation link created successfully",
             success: true,
-            data: inviteURL
+            data: { url: inviteURL, roomId: userId }
         });
 
 
@@ -155,7 +155,7 @@ export const displayGroups = async (req, res) => {
         const { userId } = req;
 
         const groups = await Membership.find({ user: userId }).populate("user"); //display all the groups
-        console.log("all groups",groups);
+        console.log("all groups", groups);
         if (!groups.length) {
             return res.status(404).json({ message: "No groups exist", success: false });
         }
@@ -167,5 +167,22 @@ export const displayGroups = async (req, res) => {
         res.status(500).json({
             message: "Server error",
         });
+    }
+}
+
+export const verifyRoom = async (req, res) => {
+    try {
+        const { link } = req.params;
+        console.log("link --------->",link)
+        const roomId = await linkValidator(link);
+        if(!roomId){
+            return res.status(404).json({message:"unauthorised",sucess:false})
+        }
+        console.log("room Iddd -->",roomId)
+        return res.status(200).json({message:"link verified",data:roomId,success:true});
+
+    } catch (error) {
+        console.log("error in link validation",error)
+        return res.status(500).json({message:"Server error"});
     }
 }
