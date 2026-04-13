@@ -1,5 +1,5 @@
-const API_URL = "https://promp-flow.onrender.com/api/v1";
-// const API_URL = "http://localhost:5000/api/v1";
+// const API_URL = "https://promp-flow.onrender.com/api/v1";
+const API_URL = "http://localhost:5000/api/v1";
 export const signup = async (email: string, password: string) => {
   const res = await fetch(`${API_URL}/signup`, {
     method: "POST",
@@ -22,6 +22,16 @@ export const login = async (email: string, password: string) => {
   return res.json();
 };
 
+export const OAuthLogin  = async(credential:string|undefined)=>{
+    const res = await fetch(`${API_URL}/oauth`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({credential }),
+    credentials: "include",
+  });
+  return res.json();
+}
+
 export const message = async (prompt: string) => {
   const res = await fetch(`${API_URL}/ask-ai`, {
     method: "POST",
@@ -30,7 +40,8 @@ export const message = async (prompt: string) => {
     credentials: "include",
   });
 
-  return res.json();
+  // console.log("resss ---->",res)
+  return await res.json();
 }
 export const saveMessage = async (prompt: string, response: string) => {
   const res = await fetch(`${API_URL}/save-message`, {
@@ -49,4 +60,27 @@ export const getMessage = async (page:number) => {
   });
 
     return res.json();
+}
+// groupRouter.get("/generate-link/:groupName",authenticate,generateInvitationLink);
+
+export const createInvitationLink = async()=>{
+  const res = await fetch(`${API_URL}/generate-link/boruahGroup`,{
+    credentials:"include",
+  });
+  return res.json();
+}
+
+export const verifyRoom = async (roomURL:string)=>{
+  console.log("room url",roomURL)
+  const res = await fetch(`${API_URL}/verify-link/${roomURL} `,{
+    credentials:"include",
+  });
+  return res.json()
+}
+
+export const checkAuth = async()=>{
+  const res = await fetch(`${API_URL}/check-auth`,{
+    credentials:"include"
+  })
+  return res.json();
 }

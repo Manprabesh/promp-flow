@@ -1,4 +1,4 @@
-/* :root {
+:root {
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -55,15 +55,16 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  /* border-inline: 1px solid var(--border); */
+  /* min-height: 100svh; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* box-sizing: border-box; */
 }
 
 body {
   margin: 0;
+  overflow: hidden;
 }
 
 h1,
@@ -108,4 +109,4 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
-} */
+}

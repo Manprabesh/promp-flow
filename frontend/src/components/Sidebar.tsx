@@ -1,22 +1,26 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../stylesheet/sidebar.css";
-import {  House, ScrollText } from "lucide-react"
-
+import {  House, ScrollText, FolderRoot } from "lucide-react"
+import Card from "../pages/Card";
 const navLinks = [
   {
     section: "Main",
     items: [
       { path: "/app/card", label: "Home", icon: <House /> },
       { path: "/app/preview", label: "Store", icon: <ScrollText /> },
+      {path: "/app/project",label:"project",icon:<FolderRoot />}
     ],
   },
 ];
+
+
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
+    <>
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
 
       {/* Header with brand + toggle */}
@@ -56,5 +60,8 @@ export default function Sidebar() {
         ))}
       </nav>
     </aside>
+    {/* {props.children} */}
+    {/* <Card/> */}
+    </>
   );
 }

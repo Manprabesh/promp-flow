@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { login } from "../services/api";
+import { login, OAuthLogin } from "../services/api";
 import "../stylesheet/auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+
+import { GoogleLogin } from '@react-oauth/google';
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,12 +27,25 @@ const Login = () => {
 
   };
 
+  const handleGoogleLogin = async (credential: string | undefined) => {
+    try {
+
+      const res = await OAuthLogin(credential);
+      if (res.success) {
+        console.log(res);
+      navigate("/app/card");
+
+      }
+    } catch (error) {
+      console.log('error in OAuth', error)
+    }
+  }
   return (
     <>
 
-      {
+      {/* {
         loader && <Loader />
-      }
+      } */}
 
       <div className="auth-container">
         <div className="auth-card">
@@ -52,7 +67,15 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
+            <GoogleLogin
+              onSuccess={credentialResponse => {
+                handleGoogleLogin(credentialResponse.credential);
+                console.log(credentialResponse);
+              }}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+            />
             <button className="auth-button" type="submit">
               Signup
             </button>

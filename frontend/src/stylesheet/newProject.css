@@ -1,0 +1,26 @@
+.container{
+    /* width: 9700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; */
+
+}
+.input-box{
+    height: 100px;
+    /* width:200px; */
+    text-align: center;
+    font-size: 30px;
+    border-radius: 3%;
+}
+.project-description{
+       height: 100px;
+    /* width:200px; */
+    text-align: center;
+    font-size: 30px;
+    border-radius: 3%;
+}
+
+button{
+    height:30px
+}

@@ -1,13 +1,13 @@
-.inputNode{
+.inputNode {
     display: flex;
     flex-direction: row;
-    align-items: center; 
+    align-items: center;
     background-color: white;
     height: 100%;
     width: 100%;
 }
 
-.inputText{
+.inputText {
     border-radius: 5px;
     font-size: 10px;
     padding: 5px 10px;
@@ -15,7 +15,7 @@
     height: 100%;
 }
 
-.inputBtn{
+.inputBtn {
     width: full;
     height: 23px;
     padding: 0px 2px;
@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: column;
     background-color: #454040;
-    
+
     width: 100%;
     min-height: 150px;
     max-height: 350px;
@@ -83,7 +83,35 @@
     flex: 1;
     min-width: 0;
 }
-/* #displayText{
-  height: 100%;
-    width: 100%;
-} */
+
+
+.navbar {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.nav-btn {
+    background-color: rgb(24, 211, 170);
+    width: 100px;
+    height: 30px;
+    border-radius: 10px;
+
+}
+
+.center-node {
+    position: absolute;
+    transform: translate(-213%, -50%);
+    background-color: rgb(24, 211, 170);
+    top: 3%;
+    left: 50%;
+    gap: 8px;
+    z-index: 10;
+    border-radius: 10px;
+    width: 100px;
+    height: 30px;
+}
