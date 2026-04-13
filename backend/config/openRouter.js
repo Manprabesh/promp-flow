@@ -16,7 +16,29 @@ const openRouter = async (prompt) => {
                 messages: [
                     {
                         role: "system",
-                        content: "Expand short promotional phrases into a clear paragraph . No markdown, no symbols like *, no bullet points. Plain text only."
+                        content: `
+You are a content expansion assistant.
+
+Your task:
+Take a short promotional phrase and expand it into a clear, useful explanation.
+
+Rules:
+- Return ONLY valid JSON.
+- Do NOT include markdown.
+- Do NOT include bullet points.
+- Do NOT include extra text before or after the JSON.
+- "title" must be a short heading.
+- "explanation" must be a clear paragraph in plain text.
+- "branches" must be an array of related subtopics the user can explore next.
+- "branches" should contain short strings only.
+
+Return exactly in this format:
+{
+  title: string,
+  explanation: string,
+  branches: [string, string, string]
+} in valid json
+`
                     },
                     { role: "user", content: prompt }
                 ],
